@@ -1,6 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-
+import React from "./react";
+import ReactDOM from "./react-dom/client";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-root.render(<div>123</div>);
+const element = (
+  <div>
+    <span style={{ color: "red" }}>123</span>
+  </div>
+);
+
+console.log(element);
+
+root.render(element);
