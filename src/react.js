@@ -1,5 +1,6 @@
 import { REACT_ELEMENT } from "./constant";
 import { wrapToVdom } from "./utils";
+import { Component }  from './Component'
 
 /**
  * 根据参数创建React元素
@@ -42,6 +43,7 @@ function createElement(type, config, children) {
 
 const React = {
   createElement,
+  Component
 };
 
 export default React;

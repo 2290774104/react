@@ -11,11 +11,17 @@ function mount(vdom, container) {
  */
 function createDOM(vdom) {
   const { type, props } = vdom;
-  const { children } = props
+  const { children } = props;
   let dom;
   console.log(type, vdom, children);
   if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
+  } else if (typeof type === "function") {
+    if (type.isReactComponent) {
+      return mountClassComponent(vdom);
+    } else {
+      return mountFunctionComponent(vdom);
+    }
   } else {
     dom = document.createElement(type);
   }
@@ -30,7 +36,20 @@ function createDOM(vdom) {
       }
     }
   }
-  return dom
+  return dom;
+}
+
+function mountClassComponent(vdom) {
+  const { type, props } = vdom;
+  const classInstance = new type(props);
+  const renderVdom = classInstance.render();
+  return createDOM(renderVdom);
+}
+
+function mountFunctionComponent(vdom) {
+  const { type, props } = vdom;
+  const renderVdom = type(props);
+  return createDOM(renderVdom);
 }
 
 function reconcileChildren(childrenVdom, parentDOM) {
