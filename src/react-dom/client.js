@@ -13,7 +13,6 @@ function createDOM(vdom) {
   const { type, props } = vdom;
   const { children } = props;
   let dom;
-  console.log(type, vdom, children);
   if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
   } else if (typeof type === "function") {
@@ -36,6 +35,8 @@ function createDOM(vdom) {
       }
     }
   }
+  // 在根据虚拟DOM创建真实DOM后，就可以建立关系
+  vdom.realDOM = dom;
   return dom;
 }
 
@@ -43,12 +44,15 @@ function mountClassComponent(vdom) {
   const { type, props } = vdom;
   const classInstance = new type(props);
   const renderVdom = classInstance.render();
+  // 将render渲染结果放到classInstance上暂存
+  classInstance.oldRenderVdom = renderVdom;
   return createDOM(renderVdom);
 }
 
 function mountFunctionComponent(vdom) {
   const { type, props } = vdom;
   const renderVdom = type(props);
+  vdom.oldRenderVdom = renderVdom;
   return createDOM(renderVdom);
 }
 
@@ -79,6 +83,10 @@ function updateProps(dom, oldProps = {}, newProps = {}) {
         dom.style[attr] = styleObject[attr];
       }
     }
+    // 处理绑定事件
+    else if (/^on[A-Z].*/.test(key)) {
+      dom[key.toLowerCase()] = newProps[key];
+    }
     // 其他属性之间赋值
     else {
       dom[key] = newProps[key];
@@ -90,6 +98,17 @@ function updateProps(dom, oldProps = {}, newProps = {}) {
       dom[key] = null;
     }
   }
+}
+
+export function findDOM(vdom) {
+  if (!vdom) return null
+  return vdom.realDOM
+}
+
+export function compareTwoVdom(parentDOM, oldVdom, newVdom) {
+  const oldDOM = findDOM(oldVdom)
+  const newDOM = createDOM(newVdom)
+  parentDOM.replaceChild(newDOM, oldDOM)
 }
 
 class DOMRoot {
