@@ -1,4 +1,4 @@
-import { REACT_ELEMENT } from "./constant";
+import { REACT_ELEMENT, REACT_FORWARD_REF_TYPE } from "./constant";
 import { wrapToVdom } from "./utils";
 import { Component } from "./Component";
 
@@ -45,10 +45,19 @@ function createRef() {
   return { current: null };
 }
 
+//其实函数组件本质上就是render方法，就是接收属性，返回react元素
+function forwardRef(render) {
+  return {
+    $$typeof: REACT_FORWARD_REF_TYPE,
+    render, // 其实就是原来的函数组件那个函数
+  };
+}
+
 const React = {
   createElement,
   Component,
   createRef,
+  forwardRef,
 };
 
 export default React;

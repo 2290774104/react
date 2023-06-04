@@ -1,4 +1,4 @@
-import { REACT_TEXT } from "../constant";
+import { REACT_FORWARD_REF_TYPE, REACT_TEXT } from "../constant";
 import { addEvent } from "../event";
 
 function mount(vdom, container) {
@@ -14,7 +14,10 @@ function createDOM(vdom) {
   const { type, props, ref } = vdom;
   const { children } = props;
   let dom;
-  if (type === REACT_TEXT) {
+  //如果此虚拟DOM类型是一个文本节点 string number
+  if (type && type.$$typeof === REACT_FORWARD_REF_TYPE) {
+    return mountForwardComponent(vdom);
+  } else if (type === REACT_TEXT) {
     dom = document.createTextNode(props);
   } else if (typeof type === "function") {
     if (type.isReactComponent) {
@@ -38,8 +41,15 @@ function createDOM(vdom) {
   }
   // 在根据虚拟DOM创建真实DOM后，就可以建立关系
   vdom.realDOM = dom;
-  if (ref) ref.current = dom
+  if (ref) ref.current = dom;
   return dom;
+}
+
+function mountForwardComponent(vdom) {
+  const { type, props, ref } = vdom;
+  const renderVdom = type.render(props, ref);
+  vdom.oldRenderVdom = renderVdom;
+  return createDOM(renderVdom);
 }
 
 function mountClassComponent(vdom) {
@@ -48,7 +58,7 @@ function mountClassComponent(vdom) {
   const renderVdom = classInstance.render();
   // 将render渲染结果放到classInstance上暂存
   classInstance.oldRenderVdom = renderVdom;
-  if(ref) ref.current = classInstance
+  if (ref) ref.current = classInstance;
   return createDOM(renderVdom);
 }
 
@@ -88,7 +98,7 @@ function updateProps(dom, oldProps = {}, newProps = {}) {
     }
     // 处理绑定事件
     else if (/^on[A-Z].*/.test(key)) {
-      addEvent(dom, key, newProps[key])
+      addEvent(dom, key, newProps[key]);
     }
     // 其他属性之间赋值
     else {
@@ -104,14 +114,14 @@ function updateProps(dom, oldProps = {}, newProps = {}) {
 }
 
 export function findDOM(vdom) {
-  if (!vdom) return null
-  return vdom.realDOM
+  if (!vdom) return null;
+  return vdom.realDOM;
 }
 
 export function compareTwoVdom(parentDOM, oldVdom, newVdom) {
-  const oldDOM = findDOM(oldVdom)
-  const newDOM = createDOM(newVdom)
-  parentDOM.replaceChild(newDOM, oldDOM)
+  const oldDOM = findDOM(oldVdom);
+  const newDOM = createDOM(newVdom);
+  parentDOM.replaceChild(newDOM, oldDOM);
 }
 
 class DOMRoot {

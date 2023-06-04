@@ -81,20 +81,13 @@ class Sum extends React.Component {
   };
 }
 
-class TextInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.ref = React.createRef();
-  }
+console.log(<Sum />);
 
-  render() {
-    return <input ref={this.ref} />;
-  }
-
-  getFocus = () => {
-    this.ref.current.focus();
-  };
+function TextInput(props, forwardRef) {
+  return <input ref={forwardRef} />;
 }
+
+const ForwardTextInput = React.forwardRef(TextInput)
 
 class Form extends React.Component {
   constructor(props) {
@@ -105,14 +98,14 @@ class Form extends React.Component {
   render() {
     return (
       <div>
-        <TextInput ref={this.ref} />
+        <ForwardTextInput ref={this.ref} />
         <button onClick={this.getFocus}>获得焦点</button>
       </div>
     );
   }
 
   getFocus = () => {
-    this.ref.current.getFocus();
+    this.ref.current.focus();
   };
 }
 
