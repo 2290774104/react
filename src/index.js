@@ -1,6 +1,5 @@
 import React from "./react";
 import ReactDOM from "./react-dom/client";
-import { updateQueue } from "./Component";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -38,37 +37,21 @@ class ClassComponent extends React.Component {
 
   render() {
     return (
-      <div>
+      <div onClick={this.divClick}>
         <p>{this.props.title}</p>
         <p>number: {this.state.number}</p>
-        <button onClick={this.handleClick}>+</button>
+        <button onClick={this.clickButton}>+</button>
       </div>
     );
   }
 
-  handleClick = () => {
-    updateQueue.isBatchingUpdate = true;
-    this.setState({
-      number: this.state.number + 1,
-    });
-    console.log(this.state.number);
-    this.setState({
-      number: this.state.number + 1,
-    });
-    console.log(this.state.number);
-    setTimeout(() => {
-      this.setState({
-        number: this.state.number + 1,
-      });
-      console.log(this.state.number);
-      this.setState({
-        number: this.state.number + 1,
-      });
-      console.log(this.state.number);
-    }, 1000);
-    updateQueue.isBatchingUpdate = false;
-    updateQueue.batchUpdate();
+  clickButton = () => {
+    console.log('clickButton');
   };
+
+  divClick = () => {
+    console.log('divClick');
+  }
 }
 
 console.log(<ClassComponent title="hello" />);

@@ -6,7 +6,7 @@ export let updateQueue = {
   isBatchingUpdate: false,
   updaters: new Set(),
   batchUpdate() {
-    console.log(updateQueue.updaters);
+    updateQueue.isBatchingUpdate = false
     for (const updater of updateQueue.updaters) {
       updater.updateComponent();
     }
@@ -38,7 +38,6 @@ class Updater {
   }
 
   emitUpdate() {
-    console.log(this);
     // 如果需要批量更新
     if (updateQueue.isBatchingUpdate) {
       // 不直接更新组件，而是将更新器添加到updaters中暂存
