@@ -11,7 +11,7 @@ function mount(vdom, container) {
  * @param {*} vdom 虚拟DOM
  */
 function createDOM(vdom) {
-  const { type, props } = vdom;
+  const { type, props, ref } = vdom;
   const { children } = props;
   let dom;
   if (type === REACT_TEXT) {
@@ -38,6 +38,7 @@ function createDOM(vdom) {
   }
   // 在根据虚拟DOM创建真实DOM后，就可以建立关系
   vdom.realDOM = dom;
+  if (ref) ref.current = dom
   return dom;
 }
 

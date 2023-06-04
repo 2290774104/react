@@ -46,14 +46,39 @@ class ClassComponent extends React.Component {
   }
 
   clickButton = () => {
-    console.log('clickButton');
+    console.log("clickButton");
   };
 
   divClick = () => {
-    console.log('divClick');
-  }
+    console.log("divClick");
+  };
 }
 
 console.log(<ClassComponent title="hello" />);
 
-root.render(<ClassComponent title="hello" />);
+class Sum extends React.Component {
+  constructor(props) {
+    super(props);
+    this.a = React.createRef();
+    this.b = React.createRef();
+    this.c = React.createRef();
+  }
+
+  render() {
+    return (
+      <div>
+        <input ref={this.a} />
+        +
+        <input ref={this.b} />
+        <button onClick={this.add}>=</button>
+        <input ref={this.c} />
+      </div>
+    );
+  }
+
+  add = () => {
+    this.c.current.value = this.a.current.value + this.b.current.value;
+  };
+}
+
+root.render(<Sum />);
