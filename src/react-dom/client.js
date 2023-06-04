@@ -43,11 +43,12 @@ function createDOM(vdom) {
 }
 
 function mountClassComponent(vdom) {
-  const { type, props } = vdom;
+  const { type, props, ref } = vdom;
   const classInstance = new type(props);
   const renderVdom = classInstance.render();
   // 将render渲染结果放到classInstance上暂存
   classInstance.oldRenderVdom = renderVdom;
+  if(ref) ref.current = classInstance
   return createDOM(renderVdom);
 }
 

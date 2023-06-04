@@ -81,4 +81,39 @@ class Sum extends React.Component {
   };
 }
 
-root.render(<Sum />);
+class TextInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
+  render() {
+    return <input ref={this.ref} />;
+  }
+
+  getFocus = () => {
+    this.ref.current.focus();
+  };
+}
+
+class Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
+  render() {
+    return (
+      <div>
+        <TextInput ref={this.ref} />
+        <button onClick={this.getFocus}>获得焦点</button>
+      </div>
+    );
+  }
+
+  getFocus = () => {
+    this.ref.current.getFocus();
+  };
+}
+
+root.render(<Form />);
